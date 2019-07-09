@@ -44,14 +44,24 @@ class Solution
 
   def clear_collection
     #place solution here
+    res = @coll.delete_many()
+    res
+    
   end
 
   def load_collection(file_path) 
     #place solution here
+    json_loaded = self.class.load_hash(file_path)
+    @coll.insert_many(json_loaded)
+    
   end
 
   def insert(race_result)
     #place solution here
+    
+    res = @coll.insert_one(race_result)
+    res
+    
   end
 
   #
@@ -60,10 +70,17 @@ class Solution
 
   def all(prototype={})
     #place solution here
+    
+    res = @coll.find(prototype)
+    res
+    
   end
 
   def find_by_name(fname, lname)
     #place solution here
+    res = @coll.find(:first_name=> fname, :last_name => lname).projection(first_name: 1, last_name: 1, number: 1, _id: 0)
+    
+    
   end
 
   #
@@ -72,6 +89,10 @@ class Solution
 
   def find_group_results(group, offset, limit) 
     #place solution here
+    
+    res = @coll.find(group:group).projection(group: 0, _id:0).sort({"secs":1}).skip(offset).limit(limit)
+    res
+    
   end
 
   #
