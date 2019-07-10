@@ -1,6 +1,8 @@
 class Racer
-
+    include ActiveModel::Model
     attr_accessor :id, :number, :first_name, :last_name, :gender, :group, :secs
+
+
 
     def self.mongo_client 
 		Mongoid::Clients.default
@@ -69,7 +71,37 @@ class Racer
         self.class.collection.find(number:@number).delete_one
     end
 
+    def persisted?
+        !@id.nil?
+    end
 
+    def created_at
+        nil
+    end
+
+    def updated_at
+        nil
+    end
+
+    def self.paginate (params)
+
+        page = (params[:page] ||= 1).to_i
+        per_page = (params[:per_page] ||= 30).to_i
+        skip = (page-1)*per_page
+        sort = params[:sort] ||= {number: 1}
+
+        racers = []
+        all({}, {}, skip, per_page).each do |doc|
+            racers << Racer.new(doc)
+        end
+
+        total = all({}, {}, 0, 1).count
+
+        WillPaginate::Collection.create(page, per_page, total) do |pager| 
+            pager.replace(racers)
+        end
+
+    end
 
 
 

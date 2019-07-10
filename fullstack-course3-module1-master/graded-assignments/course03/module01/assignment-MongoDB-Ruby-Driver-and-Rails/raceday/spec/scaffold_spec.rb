@@ -43,7 +43,7 @@ feature "Module 1 Scaffolding Tests", :type => :routing do
         scenario "home page exists and is list of racers with links to show, edit and destroy for all racers" do 
             visit (root_path) 
             expect(page.status_code).to eq(200)
-            expect(page).to have_content("Listing Racers")
+            expect(page).to have_content("Racers")
             expect(page).to have_link('Show', :href =>"#{racer_path(racer.id)}")
             expect(page).to have_link("Edit", :href =>"#{edit_racer_path(racer.id)}")
             expect(page).to have_link("Destroy", :href =>"#{racer_path(racer.id)}")
