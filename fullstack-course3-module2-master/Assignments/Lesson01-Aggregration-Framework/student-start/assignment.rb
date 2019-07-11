@@ -57,14 +57,26 @@ class Solution
 
   def racer_names
     #place solution here
+
+    res = @coll.find.aggregate([{ :$project => { :_id=>0, :first_name => 1, :last_name => 1 }}])
+    res
+
   end
 
   def id_number_map 
     #place solution here
+
+    res = @coll.find.aggregate([{ :$project => {:_id=>1, :number => 1}}])
+    res
+
   end
 
   def concat_names
     #place solution here
+
+    res = @coll.find.aggregate([{ :$project => {:_id=>0, :number => 1, :name => { :$concat => ["$last_name", ", ", "$first_name"]}}}])
+    res
+
   end
 
   #
@@ -74,14 +86,24 @@ class Solution
 
   def group_times
     #place solution here
+
+    @coll.find.aggregate([{:$group=>{:_id=>{:age=>"$group", :gender=>"$gender"}, runners:{:$sum=>1}, fastest_time:{:$min=>"$secs"}}}])
+
   end
 
   def group_last_names
     #place solution here
+
+    @coll.find.aggregate([{:$group => {:_id => {:age=> "$group", :gender => "$gender"}, 
+    last_names: {:$push => "$last_name"}}}])
+
   end
 
   def group_last_names_set
     #place solution here
+    @coll.find.aggregate([{:$group => {:_id => {:age=> "$group", :gender => "$gender"}, 
+    last_names: {:$addToSet => "$last_name"}}}])
+
   end
 
   #
@@ -89,10 +111,20 @@ class Solution
   #
   def groups_faster_than criteria_time
     #place solution here
+
+    @coll.find.aggregate([{:$group=>{:_id=>{:age=>"$group", :gender=>"$gender"}, 
+    runners:{:$sum=>1}, fastest_time:{:$min=>"$secs"}}}, {:$match=>
+  {:fastest_time=>{:$lte=>criteria_time}}}])
+
   end
 
   def age_groups_faster_than age_group, criteria_time
     #place solution here
+
+    @coll.find.aggregate([{:$match=>{:age => age_group}}, {:$group=>{:_id=>{:age=>"$group", :gender=>"$gender"}, 
+    runners:{:$sum=>1}, fastest_time:{:$min=>"$secs"}}}, {:$match=>
+  {:fastest_time=>{:$lte=>criteria_time}}}])
+
   end
 
 
@@ -101,10 +133,16 @@ class Solution
   #
   def avg_family_time last_name
     #place solution here
+    @coll.find.aggregate([{:$match => {:last_name => last_name}}, {:$group=>{:_id => "$last_name", 
+    avg_time:{:$avg=>"$secs"}, numbers: {:$push => "$number"}}}])
+
   end
   
   def number_goal last_name
     #place solution here
+    @coll.find.aggregate([{:$match => {:last_name => last_name}}, {:$group=>{:_id => "$last_name", 
+    avg_time:{:$avg=>"$secs"}, numbers: {:$push => "$number"}}}, {:$unwind=>'$zips'}, {:$project => {:_id=>0, :last_name => 1, :number => 1, :avg_time => 1}}])
+
   end
 
 end
