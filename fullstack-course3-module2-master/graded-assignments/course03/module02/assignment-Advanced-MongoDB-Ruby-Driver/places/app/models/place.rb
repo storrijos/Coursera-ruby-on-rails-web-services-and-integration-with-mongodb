@@ -159,7 +159,7 @@ def self.near (point, max_meters=nil)
 
 end
 
-def near (max_meters=nil)
+def near(max_meters=nil)
 
   near_points = Array.new
   Place.near(@location, max_meters).each {|p| near_points << Place.new(p)}
@@ -168,6 +168,11 @@ def near (max_meters=nil)
 
 end
 
+def photos(offset=0, limit=0)
+
+  self.class.mongo_client.database.fs.find('metadata.place': BSON::ObjectId.from_string(@id)).map{|photo| Photo.new(photo)}
+
+end
 
 
 end
