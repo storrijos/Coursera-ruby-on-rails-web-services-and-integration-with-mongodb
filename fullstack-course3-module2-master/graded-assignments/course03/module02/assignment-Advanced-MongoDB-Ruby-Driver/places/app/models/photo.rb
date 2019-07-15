@@ -128,8 +128,6 @@ def self.find_photos_for_place(id)
     else
       id_arg = id
     end
-
-
     mongo_client.database.fs.find('metadata.place':id_arg)
   end
 

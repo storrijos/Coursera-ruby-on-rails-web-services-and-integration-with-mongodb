@@ -1,6 +1,6 @@
 class Place
   include Mongoid::Document
-
+  include ActiveModel::Model
   attr_accessor :id, :formatted_address, :location, :address_components
 
   def initialize hash
@@ -20,6 +20,11 @@ class Place
     @location = Point.new(hash[:geometry][:geolocation])
 
   end
+
+  def persisted?
+    !@id.nil?
+  end
+  
 
 
   def self.mongo_client
