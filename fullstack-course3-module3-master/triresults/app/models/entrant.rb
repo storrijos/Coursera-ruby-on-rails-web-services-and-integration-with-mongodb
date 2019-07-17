@@ -15,6 +15,7 @@ class Entrant
 
   embeds_one :race, class_name: 'RaceRef'
 
+  embeds_one :racer, as: :parent, class_name: 'RacerInfo', autobuild: true
   
 
   def the_race
