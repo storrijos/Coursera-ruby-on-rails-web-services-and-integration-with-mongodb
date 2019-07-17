@@ -2,7 +2,7 @@ class Address
 
   attr_accessor :city, :state, :location
 
-  def initialize (args)
+  def initialize (args=nil)
 
     unless args.nil?
         @city = args[:city]

@@ -42,7 +42,7 @@ feature "Module #3 Web Race/Racer Resource Access", :type => :routing do
     scenario "Query to Racer URLs returns the selected image" do 
       visit(racers_path)
       expect(page.status_code).to eq(200)      
-      expect(page).to have_content("Listing Racers")
+      expect(page).to have_content("Racers")
       expect(page).to have_link('Show')
       page.click_link("Show", :match => :first)
       expect(page.status_code).to eq(200)
